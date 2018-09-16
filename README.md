@@ -1,4 +1,4 @@
-# Visir Measurement Server
+# VISIR Measurement Server
 =============
 
 Python versión Visir Measurement Server
