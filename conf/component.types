@@ -1,0 +1,45 @@
+# Type	Cons	Flags
+# Flags:
+#	T can be turned around
+#	I Ignore value
+#	S Has special value
+#
+# use a newline at the end of every type
+
+R			2	T
+L			2	T
+C			2	T
+CE			2
+D			2
+VDCA		2	IS
+VDCB		2	IS
+VFGENA	2	IS
+VFGENB	2	IS
+VDC+6V	1	IS
+VDC+25V	1	IS
+VDC-25V	1	IS
+VDCCOM	1	IS
+5VA		2	I
+5VB		2	I
+SHORTCUT	2	T
+IPROBE	2	T
+DMM		2
+PROBE		1
+PROBE1	1
+PROBE2	1
+PROBE3	1
+PROBE4	1
+BLACKBOX	3
+RELAY1C	3
+XSWITCHOPEN		2	TI
+XSWITCHCLOSE	2	TI
+BR          8
+BLACKBOX3   3
+BLACKBOX5   5
+CONV        9
+OP			8
+Q			3
+W			2
+POT		3	S
+
+# end of file

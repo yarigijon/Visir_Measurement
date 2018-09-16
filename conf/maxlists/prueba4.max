@@ -1,0 +1,5 @@
+VDC-25V_1	C	max:-20	imax:0.5
+VDCCOM_1	0
+
+R_1 I 0 10K
+SHORTCUT_1 C I

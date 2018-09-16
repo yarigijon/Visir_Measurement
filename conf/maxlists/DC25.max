@@ -1,0 +1,14 @@
+VDC+25V_1	A	max:20	imax:0.5
+VDC-25V_2	G	max:-20 imax:0.5
+VDCCOM_1	0
+
+R_R4	A B  1.5k
+R_R2	B C  1.8k
+C_C1	C 0  0.1u
+SHORTCUT_S1	C D
+R_R3	D E  1k
+R_R1	E F  10k
+R_R5	F 0  82k
+SHORTCUT_S2	F G
+R_R6	G H  220k
+R_R7	H 0  120k
