@@ -1,0 +1,70 @@
+{
+	"breadboard" :
+	{
+		"message" : "Matriz de Contatos",
+		"description" : "Matriz de Contatos"
+	},
+	"multimeter" :
+	{
+		"message" : "Multímetro",
+		"description" : "Multímetro - Fluke 23"
+	},
+	"func_gen" :
+	{
+		"message" : "Gerador de funções",
+		"description" : "Gerador de funções - HP33120A"
+	},
+	"oscilloscope" :
+	{
+		"message" : "Osciloscópio",
+		"description" : "Osciloscópio - Agilent 54622A"
+	},
+	"dc_power" :
+	{
+		"message" : "Fonte CC",
+		"description" : "Fonte CC - Agilent E3631A"
+	},
+
+	"load" :
+	{
+		"message" : "Abrir",
+		"description" : "Abrir o Circuito"
+	},
+	"save" :
+	{
+		"message" : "Salvar",
+		"description" : "Salvar o Circuito"
+	},
+	"perf_measure" :
+	{
+		"message" : "Realizar Medição",
+		"description" : "Realizar Medição"
+	},
+
+	"wire_sel" :
+	{
+		"message" : "Cor do cabo",
+		"description" : "Seletor de cores de cabos"
+	},
+	"close" :
+	{
+		"message" : "Fechar",
+		"description" : "Fechar"
+	},
+	"reset" :
+	{
+		"message" : "Resetar",
+		"description" : "Resetar"
+	},
+	"osc_not_runnable" :
+	{
+		"message" : "O osciloscópio não está configurado para aquisição em tempo real",
+		"description" : "O osciloscópio não está configurado para aquisição em tempo real"
+	},
+
+	"down_man" :
+	{
+		"message" : "Baixar Manual",
+		"description" : "Baixar Manual do Usuário"
+	}
+}

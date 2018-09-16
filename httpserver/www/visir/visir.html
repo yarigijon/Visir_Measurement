@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Javascript client</title>
+<script type="text/javascript" src="/visir/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" id="visirjs" src="/visir/visir.js"></script>
+
+<script>
+
+var reg = null;
+var frame = null;
+
+function LoadFromURL(cookie)
+{
+	var url = "/electronics/flash/experiment.php?exp=" + cookie; 
+	reg.LoadExperimentFromURL(url, frame.GetInstrumentContainer());
+	return false;
+}
+
+function init()
+{
+	function MakeMeasurement()
+	{
+		reg.MakeRequest(transport);
+	}
+
+	trace("starting up..");
+	var transport = new visir.JSTransport(visir.SetWorking);
+	transport.onerror = function(err) { alert("Error: " + err); }
+
+	transport.Connect("http://80.211.181.245/measureserver", "fnord");
+
+	var extservice = new visir.ExtServices( { MakeMeasurement: MakeMeasurement });
+	reg = new visir.InstrumentRegistry(extservice);
+	frame = new visir.InstrumentFrame(reg, transport, $("#instrumentframe"));
+
+	loader = reg;
+
+	var savedexperiment = '<save version="2"><instruments htmlinstruments="Breadboard|FlukeMultimeter|HPFunctionGenerator|AgilentOscilloscope|TripleDC"></instruments><circuit></circuit></save>';
+	reg.LoadExperiment(savedexperiment, frame.GetInstrumentContainer());
+
+	$(".measure").click( function() {
+		MakeMeasurement();
+	});
+}
+
+function failure()
+{
+	alert("failed to load visir");
+}
+
+$(function () {
+	visir.Load(init, failure, "/visir/");
+});
+
+</script>
+
+</head>
+
+<body id="background">
+	<div id="main-flash" style="width: 990px">	
+		<div style="padding: 10px;">
+			<div id="flashContent" style="text-align: center;" >
+				<div id="instrumentframe" style="display: inline-block;" />
+			</div>
+		</div>	
+	</div>
+
+<!-- final layout footer -->
+<div style="clear: both; "></div>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+	"teacherMode": true,
+	"instrReg": null,
+	"locale": "en_UK",
+	"mesServer": "http://http://80.211.181.245/measureserver",
+	"readOnly": false,
+	"transMethod": "http",
+	"oscRunnable": true
+}
