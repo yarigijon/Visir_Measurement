@@ -1,7 +1,7 @@
 # VISIR Measurement Server
 =============
 
-Python versión Visir Measurement Server
+Visir Measurement Server Python versión.
 This is a fork python version of the C++ Visir Measurement Server, include a fork version of VISIR Html5 and bootle python framework.
 
 Setup
