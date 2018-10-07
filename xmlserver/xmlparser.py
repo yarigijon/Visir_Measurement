@@ -14,8 +14,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 '''
+# Por compatibilid de codigo con el nativo de python le cambio el nombre
+import xml.etree.cElementTree as ET
 
-import xml.etree.cElementTree as ET # por compatibilid de codigo con el nativo de python le cambio el nombre
 
 class XMLParser(object):
     def __init__(self):
@@ -51,27 +52,38 @@ class XMLParser(object):
                 self.__mOscilloscope.append(Element)
             elif Element.tag == "dcpower":
                 self.__mDCPower.append(Element)
-    
+
     def ParserProtocol(self):
-        return float(self.__mProtocol.items()[0][1]) # retorno valor de version
+        # retorno valor de version
+        return float(self.__mProtocol.items()[0][1])
 
     def ParserRequest(self):
-        #return hex(int(self.__mRequest.items()[0][1], 16)) # retorno valor sesionkey (como int hex, ver si es mas interesante como string)
-        return self.__mRequest.items()[0][1] # retorno valor sessionkey (como string, ver si es mas interesante como int hex)
+        # return hex(int(self.__mRequest.items()[0][1], 16)) # retorno valor
+        # sesionkey (como int hex, ver si es mas interesante como string)
+        # retorno valor sessionkey (como string, ver si es mas interesante como
+        # int hex)
+        return self.__mRequest.items()[0][1]
 
     def ParserCircuit(self):
         Iter = self.__mCircuit.getiterator()
-        CircuitList = [] # lo pasamos como un array por si circuit incluye mas de un CircuitList
+        # Lo pasamos como un array por si circuit incluye
+        # mas de un CircuitList
+        CircuitList = []
         for Element in Iter:
             if Element.text:
                 CircuitList.append(Element.text)
-        return CircuitList # retorno array con cicuitlists que hay en circuit
+        return CircuitList  # retorno array con cicuitlists que hay en circuit
 
     def ParserMultimeter(self):
         Multimeter = []
         for it in self.__mMultimeter:
             Iter = it.getiterator()
-            MultimeterDict = {"id": None, "function": None, "resolution": None, "range": None, "autozero": None}
+            MultimeterDict = {
+                "id": None,
+                "function": None,
+                "resolution": None,
+                "range": None,
+                "autozero": None}
             for Element in Iter:
                 if Element.tag == "multimeter":
                     MultimeterDict["id"] = int(Element.items()[0][1])
@@ -80,34 +92,51 @@ class XMLParser(object):
                 elif Element.tag == "dmm_resolution":
                     MultimeterDict["resolution"] = Element.items()[0][1]
                 elif Element.tag == "dmm_range":
-                    MultimeterDict["range"] = Element.items()[0][1] # todo: lo dejo como string ver si tienen que ser int
+                    # todo: lo dejo como string ver si tienen que ser int
+                    MultimeterDict["range"] = Element.items()[0][1]
                 elif Element.tag == "dmm_autozero":
-                    MultimeterDict["autozero"] = Element.items()[0][1] # todo: lo dejo como string ver si tienen que ser int
+                    # todo: lo dejo como string ver si tienen que ser int
+                    MultimeterDict["autozero"] = Element.items()[0][1]
             Multimeter.append(MultimeterDict)
-        return Multimeter # retornamos un array con los diccionarios correspondientes a cada uno de los multimetros
+        # retornamos un array con los diccionarios correspondientes a cada uno
+        # de los multimetros
+        return Multimeter
 
     def ParserFunctionGenerator(self):
         FunctionGenerator = []
         for it in self.__mFunctionGenerator:
             Iter = it.getiterator()
-            FunctionGeneratorDict = {"id": None, "waveform": None, "frequency": None, "amplitude": None, "offset": None}
+            FunctionGeneratorDict = {
+                "id": None,
+                "waveform": None,
+                "frequency": None,
+                "amplitude": None,
+                "offset": None}
             for Element in Iter:
                 if Element.tag == "functiongenerator":
                     FunctionGeneratorDict["id"] = int(Element.items()[0][1])
                 elif Element.tag == "fg_waveform":
                     FunctionGeneratorDict["waveform"] = Element.items()[0][1]
                 elif Element.tag == "fg_frequency":
-                    FunctionGeneratorDict["frequency"] = Element.items()[0][1] # todo: lo dejo como string ver si tiene que ser int/float
+                    # todo: lo dejo como string ver si tiene que ser int/float
+                    FunctionGeneratorDict["frequency"] = Element.items()[0][1]
                 elif Element.tag == "fg_amplitude":
-                    FunctionGeneratorDict["amplitude"] = Element.items()[0][1] # todo: lo dejo como string ver si tienen que ser float
+                    # todo: lo dejo como string ver si tienen que ser float
+                    FunctionGeneratorDict["amplitude"] = Element.items()[0][1]
                 elif Element.tag == "fg_offset":
-                    FunctionGeneratorDict["offset"] = Element.items()[0][1] # todo: lo dejo como string ver si tienen que ser int/float
+                    # todo: lo dejo como string ver si tienen que ser int/float
+                    FunctionGeneratorDict["offset"] = Element.items()[0][1]
             FunctionGenerator.append(FunctionGeneratorDict)
-        return FunctionGenerator # retornamos un array con los diccionarios correspindientes a cada uno de los generadores de funcion
+        # retornamos un array con los diccionarios correspindientes a cada uno
+        # de los generadores de funcion
+        return FunctionGenerator
 
     def ParserLogin(self):
-        #return int(self.__mLogin.items()[1][1]), hex(int(self.__mLogin.items()[0][1], 16)) # retorno valor keepalive en entero y cockie en hex
-        return int(self.__mLogin.items()[1][1]), self.__mLogin.items()[0][1] # retorno valor keeplive como entero y cockie como string 
+        # return int(self.__mLogin.items()[1][1]),
+        # hex(int(self.__mLogin.items()[0][1], 16)) # retorno valor keepalive
+        # en entero y cockie en hex
+        # retorno valor keeplive como entero y cockie como string
+        return int(self.__mLogin.items()[1][1]), self.__mLogin.items()[0][1]
 
     def ParserOscilloscope(self):
         Oscilloscope = []
@@ -115,25 +144,25 @@ class XMLParser(object):
             Iter = it.getiterator()
             OscilloscopeDict = {
                 "id": None,
-                "samplerate": None, 
-                "refpos": None, 
-                "horz_recordlength": None, 
-                "chan1_enabled": None, 
-                "chan1_coupling": None, 
-                "chan1_range": None, 
-                "chan1_offset": None, 
-                "chan1_attenuation": None, 
-                "chan2_enabled": None, 
-                "chan2_coupling": None, 
-                "chan2_range": None, 
-                "chan2_offset": None, 
-                "chan2_attenuation": None, 
-                "trig_source": None, 
-                "trig_slope": None, 
-                "trig_coupling": None, 
-                "trig_level": None, 
-                "trig_mode": None, 
-                "trig_timeout": None, 
+                "samplerate": None,
+                "refpos": None,
+                "horz_recordlength": None,
+                "chan1_enabled": None,
+                "chan1_coupling": None,
+                "chan1_range": None,
+                "chan1_offset": None,
+                "chan1_attenuation": None,
+                "chan2_enabled": None,
+                "chan2_coupling": None,
+                "chan2_range": None,
+                "chan2_offset": None,
+                "chan2_attenuation": None,
+                "trig_source": None,
+                "trig_slope": None,
+                "trig_coupling": None,
+                "trig_level": None,
+                "trig_mode": None,
+                "trig_timeout": None,
                 "trig_delay": None,
                 "meas1_channel": None,
                 "meas1_selection": None,
@@ -151,42 +180,61 @@ class XMLParser(object):
             MeasSelection = 0
             for Element in Iter:
                 if Element.tag == "oscilloscope":
-                   OscilloscopeDict["id"] = Element.items()[0][1]
+                    OscilloscopeDict["id"] = Element.items()[0][1]
                 elif Element.tag == "horz_samplerate":
                     OscilloscopeDict["samplerate"] = Element.items()[0][1]
                 elif Element.tag == "horz_refpos":
                     OscilloscopeDict["refpos"] = Element.items()[0][1]
                 elif Element.tag == "horz_recordlength":
-                    OscilloscopeDict["horz_recordlength"] = Element.items()[0][1]
+                    OscilloscopeDict["horz_recordlength"] = Element.items()[
+                        0][1]
                 elif Element.tag == "chan_enabled":
-                    if ChannelEnable == False: # miro si es la primer pasada (channel 1) o la segunda (channel2)
-                        OscilloscopeDict["chan1_enabled"] = Element.items()[0][1]  
+                    # miro si es la primer pasada (channel 1) o la segunda
+                    # (channel2)
+                    if not ChannelEnable:
+                        OscilloscopeDict["chan1_enabled"] = Element.items()[
+                            0][1]
                     else:
-                        OscilloscopeDict["chan2_enabled"] = Element.items()[0][1]
+                        OscilloscopeDict["chan2_enabled"] = Element.items()[
+                            0][1]
                     ChannelEnable = True
                 elif Element.tag == "chan_coupling":
-                    if ChannelCoupling == False: # miro si es la primer pasada (channel 1) o la segunda (channel2)
-                        OscilloscopeDict["chan1_coupling"] = Element.items()[0][1]
+                    # miro si es la primer pasada (channel 1) o la segunda
+                    # (channel2)
+                    if not ChannelCoupling:
+                        OscilloscopeDict["chan1_coupling"] = Element.items()[
+                            0][1]
                     else:
-                        OscilloscopeDict["chan2_coupling"] = Element.items()[0][1]
+                        OscilloscopeDict["chan2_coupling"] = Element.items()[
+                            0][1]
                     ChannelCoupling = True
                 elif Element.tag == "chan_range":
-                    if ChannelRange == False: # miro si es la primer pasada (channel 1) o la segunda (channel2)
+                    # miro si es la primer pasada (channel 1) o la segunda
+                    # (channel2)
+                    if not ChannelRange:
                         OscilloscopeDict["chan1_range"] = Element.items()[0][1]
                     else:
                         OscilloscopeDict["chan2_range"] = Element.items()[0][1]
                     ChannelRange = True
                 elif Element.tag == "chan_offset":
-                    if ChannelOffset == False: # miro si es la primer pasada (channel 1) o la segunda (channel2)
-                        OscilloscopeDict["chan1_offset"] = Element.items()[0][1]
+                    # miro si es la primer pasada (channel 1) o la segunda
+                    # (channel2)
+                    if not ChannelOffset:
+                        OscilloscopeDict["chan1_offset"] = Element.items()[
+                            0][1]
                     else:
-                        OscilloscopeDict["chan2_offset"] = Element.items()[0][1]
+                        OscilloscopeDict["chan2_offset"] = Element.items()[
+                            0][1]
                     ChannelOffset = True
                 elif Element.tag == "chan_attenuation":
-                    if ChannelAttenuation == False: # miro si es la primer pasada (channel 1) o la segunda (channel2)
-                        OscilloscopeDict["chan1_attenuation"] = Element.items()[0][1]
+                    # miro si es la primer pasada (channel 1) o la segunda
+                    # (channel2)
+                    if not ChannelAttenuation:
+                        OscilloscopeDict["chan1_attenuation"] = \
+                            Element.items()[0][1]
                     else:
-                        OscilloscopeDict["chan2_attenuation"] = Element.items()[0][1]
+                        OscilloscopeDict["chan2_attenuation"] = \
+                            Element.items()[0][1]
                     ChannelAttenuation = True
                 elif Element.tag == "trig_source":
                     OscilloscopeDict["trig_source"] = Element.items()[0][1]
@@ -204,23 +252,29 @@ class XMLParser(object):
                     OscilloscopeDict["trig_delay"] = Element.items()[0][1]
                 elif Element.tag == "meas_channel":
                     if MeasChannel == 0:
-                        OscilloscopeDict["meas1_channel"] = Element.items()[0][1]
-                        MeasChannel +=1
+                        OscilloscopeDict["meas1_channel"] = Element.items()[
+                            0][1]
+                        MeasChannel += 1
                     elif MeasChannel == 1:
-                        OscilloscopeDict["meas2_channel"] = Element.items()[0][1]
-                        MeasChannel +=1
+                        OscilloscopeDict["meas2_channel"] = Element.items()[
+                            0][1]
+                        MeasChannel += 1
                     else:
-                        OscilloscopeDict["meas3_channel"] = Element.items()[0][1]
+                        OscilloscopeDict["meas3_channel"] = Element.items()[
+                            0][1]
                         MeasChannel = 0
                 elif Element.tag == "meas_selection":
                     if MeasSelection == 0:
-                        OscilloscopeDict["meas1_selection"] = Element.items()[0][1]
-                        MeasSelection +=1
+                        OscilloscopeDict["meas1_selection"] = Element.items()[
+                            0][1]
+                        MeasSelection += 1
                     elif MeasSelection == 1:
-                        OscilloscopeDict["meas2_selection"] = Element.items()[0][1]
-                        MeasSelection +=1
+                        OscilloscopeDict["meas2_selection"] = Element.items()[
+                            0][1]
+                        MeasSelection += 1
                     else:
-                        OscilloscopeDict["meas3_selection"] = Element.items()[0][1]
+                        OscilloscopeDict["meas3_selection"] = Element.items()[
+                            0][1]
                         MeasSelection = 0
                 elif Element.tag == "osc_autoscale":
                     OscilloscopeDict["osc_autoscale"] = Element.items()[0][1]
@@ -231,31 +285,44 @@ class XMLParser(object):
         DCPower = []
         for it in self.__mDCPower:
             Iter = it.getiterator()
-            DCPowerDict = {"id": None, "6V+_dc_voltage": None, "6V+_dc_current": None, "25V+_dc_voltage": None, "25V+_dc_current": None, "25V-_dc_voltage": None, "25V-_dc_current": None}
+            DCPowerDict = {
+                "id": None,
+                "6V+_dc_voltage": None,
+                "6V+_dc_current": None,
+                "25V+_dc_voltage": None,
+                "25V+_dc_current": None,
+                "25V-_dc_voltage": None,
+                "25V-_dc_current": None}
             DCOutputVoltage = 0
             DCOutputCurrent = 0
             for Element in Iter:
                 if Element.tag == "dcpower":
-                   DCPowerDict["id"] = int(Element.items()[0][1])
+                    DCPowerDict["id"] = int(Element.items()[0][1])
                 elif Element.tag == "dc_voltage":
                     if DCOutputVoltage == 0:
-                        DCPowerDict["6V+_dc_voltage"] = float(Element.items()[0][1])
+                        DCPowerDict["6V+_dc_voltage"] = float(
+                            Element.items()[0][1])
                         DCOutputVoltage += 1
                     elif DCOutputVoltage == 1:
-                        DCPowerDict["25V+_dc_voltage"] = float(Element.items()[0][1])
+                        DCPowerDict["25V+_dc_voltage"] = float(
+                            Element.items()[0][1])
                         DCOutputVoltage += 1
                     else:
-                        DCPowerDict["25V-_dc_voltage"] = float(Element.items()[0][1])
+                        DCPowerDict["25V-_dc_voltage"] = float(
+                            Element.items()[0][1])
                         DCOutputVoltage = 0
                 elif Element.tag == "dc_current":
                     if DCOutputCurrent == 0:
-                        DCPowerDict["6V+_dc_current"] = float(Element.items()[0][1])
+                        DCPowerDict["6V+_dc_current"] = float(
+                            Element.items()[0][1])
                         DCOutputCurrent += 1
                     elif DCOutputCurrent == 1:
-                        DCPowerDict["25V+_dc_current"] = float(Element.items()[0][1])
+                        DCPowerDict["25V+_dc_current"] = float(
+                            Element.items()[0][1])
                         DCOutputCurrent += 1
                     else:
-                        DCPowerDict["25V-_dc_current"] = float(Element.items()[0][1])
+                        DCPowerDict["25V-_dc_current"] = float(
+                            Element.items()[0][1])
                         DCOutputCurrent = 0
             DCPower.append(DCPowerDict)
         return DCPower

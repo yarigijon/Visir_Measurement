@@ -15,15 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 '''
 
+
 class DMM (object):
     def __init__(self):
         self.Id = 1
         self.Option = 0
-        self.InstrumentID = 22 # ID del generador de funciones
-        self.Function = 0 #
+        self.InstrumentID = 22  # ID del generador de funciones
+        self.Function = 0
         self.Resolution = 0
-        self.Range = -1 #Autorange
-        self.Autozero = 0 #Autorange
+        self.Range = -1  # Autorange
+        self.Autozero = 0  # Autorange
         self.MeasurementValue = 0.0
 
     def SetOption(self, Option):
@@ -33,7 +34,7 @@ class DMM (object):
             self.Option = 1
         else:
             self.Option = -1
-    
+
     def GetOption(self):
         return self.Option
 
@@ -79,8 +80,10 @@ class DMM (object):
         if range == "-1":
             self.range = -1
         else:
-            range == -1 #como la aplicacion web simula un fluke con autorange este siempre sera autorange
-    
+            # como la aplicacion web simula un fluke con
+            # autorange este siempre sera autorange
+            range == -1
+
     def GetRange(self):
         return self.Range
 
@@ -94,38 +97,53 @@ class DMM (object):
         elif Autozero == "2":
             self.Autozero = 2
         else:
-            self.Autozero = -2 #Normalmente utilizo -1 pero en este caso el EQCom tiene implementado este valor
+            # Normalmente utilizo -1 pero en este caso el EQCom tiene
+            # implementado este valor
+            self.Autozero = -2
 
     def GetAutoZero(self):
         return self.Autozero
 
     def CheckValues(self):
-        return (self.Option != -1 and self.Function != -1 and self.Resolution != -1 and self.Autozero != -2)
+        return (
+            self.Option != -
+            1 and self.Function != -
+            1 and self.Resolution != -
+            1 and self.Autozero != -
+            2)
 
     def GetEQCommand(self):
         if self.CheckValues():
             if self.Option == 0:
-                Command = str(self.InstrumentID) + "#" + str(self.Id)  + "\t0" + " " + str(self.Function) + " " + str(self.Resolution)
-                Command += " " + str(self.Range) + " " + str(self.Autozero) + "\n"
+                Command = str(self.InstrumentID) + "#" + \
+                    str(self.Id) + "\t0" + \
+                    " " + str(self.Function) + " " + str(self.Resolution)
+                Command += " " + str(self.Range) + " " + \
+                    str(self.Autozero) + "\n"
             elif self.Option == 1:
                 Command = str(self.InstrumentID) + "\t1\n"
             return Command
         else:
-			return -1
+            return -1
 
     def ProcessResponse(self, ComandData, Id):
         self.SetId(Id)
         Init = ComandData.find("\t")
         End = ComandData.find(" ")
-        Value = float(ComandData[Init+1:End])
+        Value = float(ComandData[Init + 1:End])
         self.MeasurementValue = Value
 
     def GetXMLResponse(self):
-        XML = '<multimeter id="' + str(self.Id) + '">\n<dmm_function value="' + self.GetFunctionStr() + '"/>\n'
-        ScientificValue = '%.6E' %self.Range
-        XML += '<dmm_resolution value="' + self.GetResolutionStr() + '"/>\n<dmm_range value="' + str(ScientificValue) + '"/>\n'
-        ScientificValue = '%.6E' %self.MeasurementValue
-        XML += '<dmm_result value="' + str(ScientificValue) + '"/>\n</multimeter>\n'
+        XML = '<multimeter id="' + \
+            str(self.Id) + '">\n<dmm_function value="' + \
+            self.GetFunctionStr() + '"/>\n'
+        ScientificValue = '%.6E' % self.Range
+        XML += '<dmm_resolution value="' + self.GetResolutionStr() + \
+            '"/>\n<dmm_range value="' + \
+            str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.MeasurementValue
+        XML += '<dmm_result value="' + \
+            str(ScientificValue) + '"/>\n</multimeter>\n'
         return XML
 
     def GetFunctionStr(self):

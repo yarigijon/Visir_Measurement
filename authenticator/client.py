@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''
 Copyright (C) 2018  Pablo Baizan
 
@@ -14,16 +16,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 '''
-
-# coding=utf-8
-#import basic_exception
+# import basic_exception
 import sys
+
 
 class ClientRegistry(object):
     def __new__(cls):
         # Implementacion especial del singleton
-        if not hasattr(cls, 'instance'): # Si no existe el atributo 'instance'
-            cls.instance = super(ClientRegistry, cls).__new__(cls) # lo creamos
+        # Si no existe el atributo 'instance', lo creamos
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(ClientRegistry, cls).__new__(cls)
         return cls.instance
 
     def Register(self):
@@ -37,12 +39,13 @@ class ClientRegistry(object):
     def AddClient(self, Client):
         self.ClientList.append(Client)
 
+
 class Client(object):
     '''Clase que contiene las variables necesarias para definir un cliente'''
-    
+
     def __init__(self):
-        '''Constructor que inicializa el objeto cliente''' 
-        self.ClientRegistry = ClientRegistry() 
+        '''Constructor que inicializa el objeto cliente'''
+        self.ClientRegistry = ClientRegistry()
         self.__mpClientID = self.ClientRegistry.GetClientId()
         self.__mpSession = None
 
@@ -53,7 +56,7 @@ class Client(object):
         if self.__mpSession and not self.__mpSession.KeepAlive():
             self.__mpSession.Close()
             self.__mpSession = None
-    
+
     def BindToSession(self, pSession):
         '''Asocia la sesion al cliente.
         Parametros:
@@ -72,11 +75,11 @@ class Client(object):
         return self.__mpSession
 
     def SessionDestroyed(self):
-        '''Recorre el vector de Listeners y destruye las sesiones asociados 
+        '''Recorre el vector de Listeners y destruye las sesiones asociados
         a estos igualando la sesion a none'''
         if self.__mpSession:
             self.mpSession = None
-    
+
     def ClientId(self):
         '''Retorna el identificador del cliente'''
         return self.__mpClientID

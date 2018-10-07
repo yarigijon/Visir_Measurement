@@ -19,33 +19,37 @@ from circuitsolver.listparser import *
 from circuitsolver.compdefreader import ComponentDefinitionRegistry
 from eqcom.eqcom import EQCom
 
+
 class Circuit (object):
     def __init__(self, ComponentsDefinitions=None):
-        ''' Almacenamos los componentes disponibles en el EQ server en ComponentList y self.Error = True
-        si el mensaje de respuesta da un error self.Error = False y se almacena el error en self.ComponentList'''
+        ''' Almacenamos los componentes disponibles en el EQ server
+        en ComponentList y self.Error = True
+        si el mensaje de respuesta da un error self.Error = False y
+        se almacena el error en self.ComponentList'''
         if ComponentsDefinitions:
             EQServer = EQCom()
-            EQServer.SendComand("system","000011\ndata\n41\t4\n")
+            EQServer.SendComand("system", "000011\ndata\n41\t4\n")
             Response = EQServer.GetResponse("system")
-            self.Error, self.ComponentList = self.ParseGetComponentListResponse(Response, ComponentsDefinitions)
+            self.Error, self.ComponentList = self.ParseGetComponentListResponse(
+                Response, ComponentsDefinitions)
         else:
             ComponentsDefinitionsFromRegistry = ComponentDefinitionRegistry()
             self.ComponentList = ComponentsDefinitionsFromRegistry.GetComponentList()
 
-        
     def ParseGetComponentListResponse(self, Response, ComponentsDefinitions):
-        if len(Response)-6 == int(Response[:6]) and Response.find("data\n41 4\t") != -1:
-            Init = Response.find("\t")+1
+        if len(Response) - \
+                6 == int(Response[:6]) and Response.find("data\n41 4\t") != -1:
+            Init = Response.find("\t") + 1
             End = Response.find("?")
             parser = ListParser(ComponentsDefinitions)
             Component = Response[Init:End]
-            List = Response[End+1:]
+            List = Response[End + 1:]
             Buffer = Component + "\n"
             while List.find("?") != -1:
                 End = List.find("?")
                 Component = List[:End]
                 Buffer += Component + "\n"
-                List = List[End+1:]
+                List = List[End + 1:]
             End = List.find("\n")
             Component = List[:End]
             Buffer += Component + "\n"
@@ -53,12 +57,12 @@ class Circuit (object):
             ComponentList = parser.GetList()
             return False, ComponentList
         else:
-            if len(Response)-7 != int(Response[:6]):
+            if len(Response) - 7 != int(Response[:6]):
                 Msg = "Response length incorrect"
             else:
                 Msg = Response[Response.find("error\n") + 6:]
             return True, Msg
-        
+
     def InstrumentBuild(self, Solution):
         Out = ""
         for Item in Solution:
@@ -75,7 +79,7 @@ class Circuit (object):
         if Out == "":
             return Out
         else:
-            return "41\t6 " + Out  + "\n"
+            return "41\t6 " + Out + "\n"
 
     def OscilloscopeBuild(self, Item):
         if Item.GetType() == "PROBE1":
@@ -98,8 +102,10 @@ class Circuit (object):
             Metodo que crea los comandos para EQ server.
 
         Paramnetros:
-            Solution [listcomponent] lista de nodos y componentes con la solucion encontrada
-            ComponentList [listcomponent] lista de nodos y componentes disponibles en el EQ server
+            Solution [listcomponent] lista de nodos y componentes
+            con la solucion encontrada
+            ComponentList [listcomponent] lista de nodos y componentes
+            disponibles en el EQ server
         '''
         Out = ""
         Nodes = self.RemoveTypes("DMM", Solution)
@@ -109,7 +115,8 @@ class Circuit (object):
         Nodes = self.RemoveTypes("XSWITCHCLOSE", Nodes)
         Nodes = self.ReplaceType("XSWITCHOPEN", "SHORTCUT", Nodes)
         MatchedNodes, Boolean = self.MatchIndex(Nodes, self.ComponentList)
-        if not MatchedNodes: # Si esta vacio retornamos True, pero el vector lo pasamos vacio
+        # Si esta vacio retornamos True, pero el vector lo pasamos vacio
+        if not MatchedNodes:
             Out = []
             return True, Out
         Out = "41\t" + "3 "
@@ -121,7 +128,7 @@ class Circuit (object):
                 First = False
             Out += self.ComponentList[It[0]].GetName()
         return Out + "\n"
-                       
+
     def ReplaceType(self, OriginalType, NewType, Nodes):
         for i in range(0, len(Nodes)):
             if OriginalType == Nodes[i].GetType():
@@ -138,34 +145,38 @@ class Circuit (object):
     def MatchIndex(self, Subset, Superset):
         '''Retorna un vector de pares que contiene el indice del superconjunto y
         el indice del subconjunto donde ambos nodos coincidente
-        Ademas retornara verdadero en caso de encontrar el subconjunto dentro del superconjunto
-        falso en el primer momento que un elemento del subconjunto no este dentro del superconjunto
+        Ademas retornara verdadero en caso de encontrar el subconjunto
+        dentro del superconjunto falso en el primer momento que un elemento
+        del subconjunto no este dentro del superconjunto
 
         Parametros:
         Subset -- subconjunto de nodos a buscar
         Superset -- lista de componentes
         '''
         Out = []
-        Used = [0]*len(Superset) #inicializamos used con tantos 0 como tamano tiene superset
-        for Subi in range(0,len(Subset)):
+        # inicializamos used con tantos 0 como tamano tiene superset
+        Used = [0] * len(Superset)
+        for Subi in range(0, len(Subset)):
             Matched = False
-            for Superi in range(0,len(Superset)):
+            for Superi in range(0, len(Superset)):
                 if Matched:
                     break
-                if Used[Superi]==0 and Subset[Subi].EqualsWithConnection(Superset[Superi]):
+                if Used[Superi] == 0 and Subset[Subi].EqualsWithConnection(
+                        Superset[Superi]):
                     Matched = True
                     Used[Superi] = 1
-                    Pair = (Superi, Subi) #Diccionario a retornar con par de Subset y Superset que coinciden
+                    # Diccionario a retornar con par de Subset y Superset que
+                    # coinciden
+                    Pair = (Superi, Subi)
                     Out.append(Pair)
             if not(Matched):
                 Pair = (-1, Subi)
                 Out.append(Pair)
         NotMached = False
         for Item in Out:
-            if Item[0]==-1:
+            if Item[0] == -1:
                 NotMached = True
         if NotMached:
             return Out, False
         else:
             return Out, True
-

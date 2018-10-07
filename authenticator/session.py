@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''
 Copyright (C) 2018  Pablo Baizan
 
@@ -15,18 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 '''
 
-# coding=utf-8
 import sys
-#sys.path.append("C:\\Users\\Susana\\Documents\\GitHub\\visir\\Software")
-#from instruments.instrumentblock import InstrumentBlock
+# sys.path.append("C:\\Users\\Susana\\Documents\\GitHub\\visir\\Software")
+# from instruments.instrumentblock import InstrumentBlock
 from circuitsolver.basic_exception import BasicException
 from datetime import datetime
 import time
 import hashlib
 import random
 
+
 class Session(object):
-    '''Objeto Sesion que contiene los elementos necesario para definir una sesion.'''
+    '''Objeto Sesion que contiene los elementos necesario
+       para definir una sesion.'''
     sSessionCounter = 1
     __mpTransaction = None
 
@@ -35,7 +38,7 @@ class Session(object):
         para definir una sesion.'''
         self.__mpSessionReg = pSessionReg
         self.sSessionCounter += 1
-        self.__mNumber =  self.sSessionCounter
+        self.__mNumber = self.sSessionCounter
         self.__mKey = key
         self.__mCookie = cookie
         self.__mKeepAlive = keepalive
@@ -87,7 +90,8 @@ class Session(object):
 
     def Touch(self):
         '''Actualiza la variable que indica cuando fue utilizada la sesion
-        por ultima vez, actualizando el tiempo de esta con la fecha-hora actual'''
+           por ultima vez, actualizando el tiempo de esta con
+           la fecha-hora actual'''
         self.__mLastActive = time.time()
 
     def Lock(self, pClient):
@@ -119,31 +123,34 @@ class Session(object):
 
     def SetActiveTransaction(self, pTransaction):
         '''Se asocia una transacion pasada como parametro a la sesion'''
-        if self.__mpTransaction and pTransaction != None:
+        if self.__mpTransaction and pTransaction is not None:
             raise BasicException("Transaction already in progress")
         self.__mpTransaction = pTransaction
 
     def HasActiveTransaction(self):
-        '''Retorna verdadero si hay una transaccion activa, o falso en otro caso'''
+        '''Retorna verdadero si hay una transaccion activa,
+           o falso en otro caso'''
         return (self.__mpTransaction != 0)
+
 
 class SessionRegistry(object):
     '''Objeto sesion registry que maneja las sesiones.'''
 
     def __new__(cls):
         # Implementacion especial del singleton
-        if not hasattr(cls, 'instance'): # Si no existe el atributo 'instance'
-            cls.instance = super(SessionRegistry, cls).__new__(cls) # lo creamos
+        # Si no existe el atributo 'instance', lo creamos
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(SessionRegistry, cls).__new__(cls)
         return cls.instance
 
     def Register(self, maxSessions, sessionTimeout):
         '''Inicializa la calse SessionRegistry.
         Parametros:
         maxSession -- numero de maximo de sesiones permitidas
-        sessionTimeout -- periodo de tiempo que una sesion puede 
+        sessionTimeout -- periodo de tiempo que una sesion puede
         estar inactiva'''
-        self.__mMaxSessions	= maxSessions
-        self.__mSessionTimeout	= sessionTimeout
+        self.__mMaxSessions = maxSessions
+        self.__mSessionTimeout = sessionTimeout
         self.__mSessions = {}
 
     def __del__(self):
@@ -154,9 +161,11 @@ class SessionRegistry(object):
     def CreateSession(self, cookie, keepalive, entry):
         '''Crea la sesion.
         Parametros:
-        cookie-- cookie a asociar con la sesion
-        keepalive-- indica si se debe manterer vivo durante un periodo de tiempo
-        entry -- parametros de inteficacion de la autenficacion (cookie, ip, prioridad)'''
+        cookie -- cookie a asociar con la sesion
+        keepalive -- indica si se debe manterer vivo durante
+                    un periodo de tiempo
+        entry -- parametros de inteficacion de la autenficacion
+                 (cookie, ip, prioridad)'''
         if entry:
             prio = entry.GetPrio()
         else:
@@ -180,7 +189,7 @@ class SessionRegistry(object):
                 self.DestroySession(pSession)
                 del self.__mSessions[key]
                 return
-    
+
     def GetSession(self, sessionkey):
         '''Obtiene la sesion a partir del identificador de sesion.
         Parametros:
@@ -214,7 +223,8 @@ class SessionRegistry(object):
         now = time.time()
         for key, value in self.__mSessions.items():
             if value.LastActive() < (now - timeout):
-                stream = "[" + str(datetime.now()) + "] " + "Session timed out: " + value.GetNumber()
+                stream = ("[" + str(datetime.now()) + "] " +
+                          "Session timed out: " + value.GetNumber())
                 print(stream)
                 self.DestroySession(value)
                 del self.__mSessions[key]
@@ -223,9 +233,9 @@ class SessionRegistry(object):
     def GenerateName(self):
         '''Genera el identificador de la sesion'''
         input = "visir session hash seed"
-        #input = "openlabs session hash seed" # original
+        # input = "openlabs session hash seed" # original
         input += str(time.time())
-        input += str(random.randint(0,32767))
+        input += str(random.randint(0, 32767))
         input += str(Session.sSessionCounter)
         md5sum = hashlib.md5()
         md5sum.update(input)
@@ -242,15 +252,15 @@ class SessionRegistry(object):
         del pSession
 
     def DestroyLeastPrio(self, lowerthan):
-        '''Este metodo destuye aquellas sesion que tiene menor prioridad que la prioridad
-        indicada como parametros.
-        Parametros:
-        lowerthan -- Entero que indica la prioridad por debajo de la cual todas
-        las sesiones seran destruidas '''
+        '''Este metodo destuye aquellas sesion que tiene menor prioridad
+           que la prioridad indicada como parametros.
+           Parametros:
+               lowerthan -- Entero que indica la prioridad por debajo de
+                            la cual todas las sesiones seran destruidas '''
         currentit = None
         for key, value in self.__mSessions.items():
             if value.GetPriority() < lowerthan:
-                if currentit != None:
+                if currentit is not None:
                     if currentit.LastActive() > value.LastActive():
                         currentit = value
                         currentkey = key
@@ -258,7 +268,8 @@ class SessionRegistry(object):
                     currentit = value
                     currentkey = key
         if currentit:
-            stream = "[" + str(datetime.now()) + "] " + "Destroying low priority session"
+            stream = ("[" + str(datetime.now()) + "] " +
+                      "Destroying low priority session")
             print(stream)
             self.DestroySession(currentit)
             del self.__mSessions[currentkey]
@@ -278,10 +289,12 @@ class SessionRegistry(object):
         pSession = self.GetSession(sessionKey)
         if pSession:
             if not pSession.Lock(pClient):
-                stream = "[" + str(datetime.now()) + "] " + "Failed to lock session"
+                stream = ("[" + str(datetime.now()) + "] " +
+                          "Failed to lock session")
                 print(stream)
                 # force the old client to release the session?
-                pSession.Unlock(pSession.GetLock()) # this might be dangerous
+                # this might be dangerous
+                pSession.Unlock(pSession.GetLock())
                 if pSession.Lock(pClient):
                     return pSession
                 return None

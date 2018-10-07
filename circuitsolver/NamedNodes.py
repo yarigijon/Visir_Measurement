@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 '''
 Copyright (C) 2018  Pablo Baizan
 
@@ -17,9 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # -*- coding: utf-8 -*-
 # namespace NamedNodes
-# este modulo debe ser llamado siempre a la vez que listcomponent en nodeinterpreter 
-# y en circuit solver3
-# para llamarlo import NamedNodes y para acceder a un objeto en particular x NamedNodes.x
+# este modulo debe ser llamado siempre a la vez que
+# listcomponent en nodeinterpreter y en circuit solver3
+# para llamarlo import NamedNodes y para acceder a un objeto en particular
+# x NamedNodes.x
 
 # Nodos generadores de funciones
 FGenA = "VFGENA"
@@ -27,10 +30,10 @@ FGenB = "VFGENB"
 # Nodos Fuente de alimentacion
 DCPlus25 = "VDC+25V"
 DCMinus25 = "VDC-25V"
-DCPlus6	= "VDC+6V"
-DC_COM	= "VDCCOM"
+DCPlus6 = "VDC+6V"
+DC_COM = "VDCCOM"
 # Nodos multimetro
-Dmm	= "DMM"
+Dmm = "DMM"
 DmmIProbe = "IPROBE"
 # Nodos osciloscopio
 OscProbe = "PROBE"

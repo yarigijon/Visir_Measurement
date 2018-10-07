@@ -17,10 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import base64
 
+
 class Oscilloscope(object):
     def __init__(self):
-        self.InstrumentID = 21 # ID del oscilloscope
-        self.Function = 0 #
+        self.InstrumentID = 21  # ID del oscilloscope
+        self.Function = 0
         self.Autoscale = 0
         self.MinSampleRate = 2500
         self.SampleRate = 25000.00
@@ -34,20 +35,20 @@ class Oscilloscope(object):
         self.TriggerLevel = 0
         self.TriggerHoldoff = 0
         self.TriggerDelay = 0
-        self.TriggerMode = 2 #Autolevel
+        self.TriggerMode = 2  # Autolevel
         self.TriggerTimeout = 2
         self.TriggerLevelReceive = 0.0
         # Todo: las measurement se pueden meter todas en una lista
         self.Measurement1 = 0.0
         self.Measurement2 = 0.0
         self.Measurement3 = 0.0
-        self.Measurement1Channel = 0 # Medida 1 con respecto al canal 1 
-        self.Measurement1Selection = 4000 # Medida 1 de tipo None
-        self.Measurement2Channel = 0 # Medida 2 con respecto al canal 1
-        self.Measurement2Selection = 4000 # Medida 2 de tipo None
-        self.Measurement3Channel = 0 # Medida 3 con respecto al canal 1
-        self.Measurement3Selection = 4000 # Medida 3 de tipo None
-        
+        self.Measurement1Channel = 0  # Medida 1 con respecto al canal 1
+        self.Measurement1Selection = 4000  # Medida 1 de tipo None
+        self.Measurement2Channel = 0  # Medida 2 con respecto al canal 1
+        self.Measurement2Selection = 4000  # Medida 2 de tipo None
+        self.Measurement3Channel = 0  # Medida 3 con respecto al canal 1
+        self.Measurement3Selection = 4000  # Medida 3 de tipo None
+
     def SetFunction(self, Function):
         if Function == "setup":
             self.Function = 0
@@ -77,7 +78,7 @@ class Oscilloscope(object):
         if float(SampleRate) < 0.0000001:
             TimeRange = 0.0000001
         else:
-            TimeRange = (1.0 / float(SampleRate))*10
+            TimeRange = (1.0 / float(SampleRate)) * 10
         if TimeRange == 0.0:
             self.MinSampleRate = 10000.0
         elif TimeRange < 0.001:
@@ -92,7 +93,7 @@ class Oscilloscope(object):
                 self.MinSampleRate = self.RecordLength / TimeRange
             else:
                 self.MinSampleRate = -1
-            
+
     def GetSampleRate(self):
         return self.MinSampleRate
 
@@ -106,7 +107,7 @@ class Oscilloscope(object):
         return self.RecordLength
 
     def SetRefPosition(self, RefPosition):
-        if float(RefPosition) > 0.0 or  float(RefPosition) < 100.0:
+        if float(RefPosition) > 0.0 or float(RefPosition) < 100.0:
             self.RefPosition = float(RefPosition)
         else:
             self.RefPosition = -1
@@ -121,7 +122,7 @@ class Oscilloscope(object):
             self.TriggerSource = 1
         elif TriggerSource == "immediate":
             self.TriggerSource = 2
-        elif  TriggerSource == "external trigger":
+        elif TriggerSource == "external trigger":
             self.TriggerSource = 3
         else:
             self.TriggerSource = -1
@@ -173,41 +174,47 @@ class Oscilloscope(object):
         elif self.TriggerCoupling == 1:
             return "dc"
 
-    def SetTriggerLevel(self,TriggerLevel):
+    def SetTriggerLevel(self, TriggerLevel):
         if self.TriggerSource == 0:
             Level = float(TriggerLevel) - self.Channels[0].GetVerticalOffset()
-            if Level > self.Channels[0].GetVerticalRange() / 2 or Level < self.Channels[0].GetVerticalRange() * -4:
+            if Level > self.Channels[0].GetVerticalRange(
+            ) / 2 or Level < self.Channels[0].GetVerticalRange() * -4:
                 self.TriggerLevel = -1
             else:
                 self.TriggerLevel = float(TriggerLevel)
         elif self.TriggerLevel == 1:
             Level = float(TriggerLevel) - self.Channels[1].GetVerticalOffset()
-            if Level > self.Channels[1].GetVerticalRange() / 2 or Level < self.Channels[1].GetVerticalRange() * -4:
+            if Level > self.Channels[1].GetVerticalRange(
+            ) / 2 or Level < self.Channels[1].GetVerticalRange() * -4:
                 self.TriggerLevel = -1
             else:
                 self.TriggerLevel = float(TriggerLevel)
-        else: # Si TriggerSource no es un canal aceptamos cualquier nivel, la web esta capada y solo permite seleccionar
-        # como fuente de trigger los canales, pero se deja preparado.
+        else:
+            # Si TriggerSource no es un canal aceptamos cualquier nivel,
+            # la web esta capada y solo permite seleccionar
+            # como fuente de trigger los canales, pero se deja preparado.
             self.TriggerLevel = float(TriggerLevel)
-    
+
     def GetTriggerLevel(self):
         return self.TriggerLevel
 
     def SetTriggerHoldoff(self, TriggerHoldoff):
-        #no hay restricciones de tiempo, pero este valor puede ralentizar mucho el sistema
+        # no hay restricciones de tiempo, pero este valor puede ralentizar
+        # mucho el sistema
         self.TriggerHoldoff = float(TriggerHoldoff)
 
     def GetTriggerHoldoff(self):
         return self.TriggerHoldoff
 
     def SetTriggerDelay(self, TriggerDelay):
-        #no hay restricciones de tiempo, pero este valor puede ralentizar mucho el sistema
+        # no hay restricciones de tiempo, pero este valor puede ralentizar
+        # mucho el sistema
         self.TriggerDelay = float(TriggerDelay)
 
     def GetTriggerDelay(self):
         return self.TriggerDelay
 
-    def SetTriggerMode(self,TriggerMode):
+    def SetTriggerMode(self, TriggerMode):
         if TriggerMode == "normal":
             self.TriggerMode = 0
         elif TriggerMode == "auto":
@@ -362,25 +369,25 @@ class Oscilloscope(object):
             self.Measurement1Selection = 1007
         else:
             self.Measurement1Selection = -1
-    
+
     def GetMeasurement1Selection(self):
         return self.Measurement1Selection
 
     def GetMeasurement1SelectionStr(self):
         if self.Measurement1Selection == 1012:
             return "ac estimate"
-        elif self.Measurement1Selection == 1003: 
-            return "area"  
-        elif self.Measurement1Selection == 1016: 
+        elif self.Measurement1Selection == 1003:
+            return "area"
+        elif self.Measurement1Selection == 1016:
             return "average frequency"
-        elif self.Measurement1Selection == 1015: 
-            return "average period"  
-        elif self.Measurement1Selection == 1004: 
-            return "cycle area"   
+        elif self.Measurement1Selection == 1015:
+            return "average period"
+        elif self.Measurement1Selection == 1004:
+            return "cycle area"
         elif self.Measurement1Selection == 1013:
-            return "dc estimate" 
+            return "dc estimate"
         elif self.Measurement1Selection == 1:
-            return "fall time"  
+            return "fall time"
         elif self.Measurement1Selection == 1011:
             return "falling slew rate"
         elif self.Measurement1Selection == 1009:
@@ -395,12 +402,12 @@ class Oscilloscope(object):
             return "negative duty cycle"
         elif self.Measurement1Selection == 11:
             return "negative width"
-        elif self.Measurement1Selection == 4000: 
+        elif self.Measurement1Selection == 4000:
             return "none"
         elif self.Measurement1Selection == 18:
-            return "overshoot" 
+            return "overshoot"
         elif self.Measurement1Selection == 3:
-            return "period"   
+            return "period"
         elif self.Measurement1Selection == 1018:
             return "phase delay"
         elif self.Measurement1Selection == 14:
@@ -410,7 +417,7 @@ class Oscilloscope(object):
         elif self.Measurement1Selection == 19:
             return "preshoot"
         elif self.Measurement1Selection == 0:
-            return "rise time" 
+            return "rise time"
         elif self.Measurement1Selection == 1010:
             return "rising slew rate"
         elif self.Measurement1Selection == 1014:
@@ -441,7 +448,7 @@ class Oscilloscope(object):
             return "voltage rms"
         elif self.Measurement1Selection == 1007:
             return "voltage top"
-            
+
     def SetMeasurement2Selection(self, Value):
         if Value == "ac estimate":
             self.Measurement2Selection = 1012
@@ -519,25 +526,25 @@ class Oscilloscope(object):
             self.Measurement2Selection = 1007
         else:
             self.Measurement2Selection = -1
-    
+
     def GetMeasurement2Selection(self):
         return self.Measurement2Selection
 
     def GetMeasurement2SelectionStr(self):
         if self.Measurement1Selection == 1012:
             return "ac estimate"
-        elif self.Measurement1Selection == 1003: 
-            return "area"  
-        elif self.Measurement1Selection == 1016: 
+        elif self.Measurement1Selection == 1003:
+            return "area"
+        elif self.Measurement1Selection == 1016:
             return "average frequency"
-        elif self.Measurement1Selection == 1015: 
-            return "average period"  
-        elif self.Measurement1Selection == 1004: 
-            return "cycle area"   
+        elif self.Measurement1Selection == 1015:
+            return "average period"
+        elif self.Measurement1Selection == 1004:
+            return "cycle area"
         elif self.Measurement1Selection == 1013:
-            return "dc estimate" 
+            return "dc estimate"
         elif self.Measurement1Selection == 1:
-            return "fall time"  
+            return "fall time"
         elif self.Measurement1Selection == 1011:
             return "falling slew rate"
         elif self.Measurement1Selection == 1009:
@@ -552,12 +559,12 @@ class Oscilloscope(object):
             return "negative duty cycle"
         elif self.Measurement1Selection == 11:
             return "negative width"
-        elif self.Measurement1Selection == 4000: 
+        elif self.Measurement1Selection == 4000:
             return "none"
         elif self.Measurement1Selection == 18:
-            return "overshoot" 
+            return "overshoot"
         elif self.Measurement1Selection == 3:
-            return "period"   
+            return "period"
         elif self.Measurement1Selection == 1018:
             return "phase delay"
         elif self.Measurement1Selection == 14:
@@ -567,7 +574,7 @@ class Oscilloscope(object):
         elif self.Measurement1Selection == 19:
             return "preshoot"
         elif self.Measurement1Selection == 0:
-            return "rise time" 
+            return "rise time"
         elif self.Measurement1Selection == 1010:
             return "rising slew rate"
         elif self.Measurement1Selection == 1014:
@@ -676,25 +683,25 @@ class Oscilloscope(object):
             self.Measurement3Selection = 1007
         else:
             self.Measurement3Selection = -1
-    
+
     def GetMeasurement3Selection(self):
         return self.Measurement3Selection
 
     def GetMeasurement3SelectionStr(self):
         if self.Measurement1Selection == 1012:
             return "ac estimate"
-        elif self.Measurement1Selection == 1003: 
-            return "area"  
-        elif self.Measurement1Selection == 1016: 
+        elif self.Measurement1Selection == 1003:
+            return "area"
+        elif self.Measurement1Selection == 1016:
             return "average frequency"
-        elif self.Measurement1Selection == 1015: 
-            return "average period"  
-        elif self.Measurement1Selection == 1004: 
-            return "cycle area"   
+        elif self.Measurement1Selection == 1015:
+            return "average period"
+        elif self.Measurement1Selection == 1004:
+            return "cycle area"
         elif self.Measurement1Selection == 1013:
-            return "dc estimate" 
+            return "dc estimate"
         elif self.Measurement1Selection == 1:
-            return "fall time"  
+            return "fall time"
         elif self.Measurement1Selection == 1011:
             return "falling slew rate"
         elif self.Measurement1Selection == 1009:
@@ -709,12 +716,12 @@ class Oscilloscope(object):
             return "negative duty cycle"
         elif self.Measurement1Selection == 11:
             return "negative width"
-        elif self.Measurement1Selection == 4000: 
+        elif self.Measurement1Selection == 4000:
             return "none"
         elif self.Measurement1Selection == 18:
-            return "overshoot" 
+            return "overshoot"
         elif self.Measurement1Selection == 3:
-            return "period"   
+            return "period"
         elif self.Measurement1Selection == 1018:
             return "phase delay"
         elif self.Measurement1Selection == 14:
@@ -724,7 +731,7 @@ class Oscilloscope(object):
         elif self.Measurement1Selection == 19:
             return "preshoot"
         elif self.Measurement1Selection == 0:
-            return "rise time" 
+            return "rise time"
         elif self.Measurement1Selection == 1010:
             return "rising slew rate"
         elif self.Measurement1Selection == 1014:
@@ -755,29 +762,55 @@ class Oscilloscope(object):
             return "voltage rms"
         elif self.Measurement1Selection == 1007:
             return "voltage top"
-    
+
     def CheckValues(self):
-        return (self.Channels[0].CheckValues and self.Channels[1].CheckValues and self.Function != -1 and 
-        self.Autoscale != -1 and self.MinSampleRate != -1 and self.RecordLength != -1 and self.RefPosition != -1
-        and self.TriggerSource != -1 and self.TriggerSlope != -1 and self.TriggerCoupling != -1 and 
-        self.TriggerLevel != -1 and self.TriggerMode != -1 and self.Measurement1Channel != -1 and 
-        self.Measurement2Channel != -1 and self.Measurement3Channel != -1 and self.Measurement1Selection != -1 and
-        self.Measurement2Selection != -1 and self.Measurement3Selection != -1)
+        return (
+            self.Channels[0].CheckValues and
+            self.Channels[1].CheckValues and self.Function != -1 and
+            self.Autoscale != -1 and self.MinSampleRate != -1 and
+            self.RecordLength != -1 and self.RefPosition != -1 and
+            self.TriggerSource != -1 and self.TriggerSlope != -1 and
+            self.TriggerCoupling != -1 and self.TriggerLevel != -1 and
+            self.TriggerMode != -1 and self.Measurement1Channel != -1 and
+            self.Measurement2Channel != -1 and
+            self.Measurement3Channel != -1 and
+            self.Measurement1Selection != - 1 and
+            self.Measurement2Selection != -1 and
+            self.Measurement3Selection != -1)
 
     def GetEQCommand(self):
         if self.CheckValues():
             if self.Function == 0:
-                Command = str(self.InstrumentID) + "\t0" + " " + str(self.Autoscale) + " " + str(self.MinSampleRate)
-                Command +=  " " + str(self.RefPosition) + " " + str(self.RecordLength) + " " + str(self.Channels[0].EnableChannel)
-                Command +=  " " + str(self.Channels[0].VerticalCoupling) + " " + str(self.Channels[0].VerticalRange)
-                Command += " " + str(self.Channels[0].VerticalOffset) + " " + str(self.Channels[0].ProbeAttenuation)
-                Command +=  " " + str(self.Channels[1].EnableChannel) + " " + str(self.Channels[1].VerticalCoupling)
-                Command +=  " " + str(self.Channels[1].VerticalRange) + " " + str(self.Channels[1].VerticalOffset)
-                Command += " " + str(self.Channels[1].ProbeAttenuation) + " " + str(self.TriggerSource) + " " + str(self.TriggerSlope)
-                Command += " " + str(self.TriggerCoupling) + " " + str(self.TriggerLevel) + " " + str(self.TriggerHoldoff)
-                Command += " " + str(self.TriggerDelay) + " " + str(self.TriggerMode) + " " + str(self.TriggerTimeout)
-                Command += " " + str(self.Measurement1Channel) + " " + str(self.Measurement1Selection) + " " + str(self.Measurement2Channel)
-                Command += " " + str(self.Measurement2Selection) + " " + str(self.Measurement3Channel) + " " + str(self.Measurement3Selection) + "\n"
+                Command = str(self.InstrumentID) + "\t0" + " " + \
+                    str(self.Autoscale) + " " + str(self.MinSampleRate)
+                Command += " " + str(self.RefPosition) + " " + str(
+                    self.RecordLength) + " " + \
+                    str(self.Channels[0].EnableChannel)
+                Command += " " + \
+                    str(self.Channels[0].VerticalCoupling) + " " + \
+                    str(self.Channels[0].VerticalRange)
+                Command += " " + \
+                    str(self.Channels[0].VerticalOffset) + " " + \
+                    str(self.Channels[0].ProbeAttenuation)
+                Command += " " + \
+                    str(self.Channels[1].EnableChannel) + " " + \
+                    str(self.Channels[1].VerticalCoupling)
+                Command += " " + \
+                    str(self.Channels[1].VerticalRange) + " " + \
+                    str(self.Channels[1].VerticalOffset)
+                Command += " " + str(self.Channels[1].ProbeAttenuation) + \
+                    " " + str(self.TriggerSource) + " " + \
+                    str(self.TriggerSlope)
+                Command += " " + str(self.TriggerCoupling) + " " + \
+                    str(self.TriggerLevel) + " " + str(self.TriggerHoldoff)
+                Command += " " + str(self.TriggerDelay) + " " + \
+                    str(self.TriggerMode) + " " + str(self.TriggerTimeout)
+                Command += " " + str(self.Measurement1Channel) + " " + str(
+                    self.Measurement1Selection) + " " + \
+                    str(self.Measurement2Channel)
+                Command += " " + str(self.Measurement2Selection) + " " + str(
+                    self.Measurement3Channel) + " " + \
+                    str(self.Measurement3Selection) + "\n"
             elif self.Function == 1:
                 Command = str(self.InstrumentID) + "\t1\n"
             else:
@@ -790,98 +823,143 @@ class Oscilloscope(object):
         if Response[0] != "0":
             Init = Response.find("\t")
             End = Response.find(" ")
-            self.Function = int(Response[Init+1:End])
-            Response = Response[End+1:]
+            self.Function = int(Response[Init + 1:End])
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.SampleRate = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.RecordLength = int(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            Response = Response[End+1:] # Aqui nos envia el numero de canales, sabemos que son 2 no lo guardamos
+            # Aqui nos envia el numero de canales, sabemos que son 2 no lo
+            # guardamos
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            Response = Response[End+1:] # Aqui nos indica que los datos siguientes son del canal 1
+            # Aqui nos indica que los datos siguientes son del canal 1
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[0].ProbeAttenuation = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            #self.Channels[0].VerticalRange = float(Response[:End])
-            Response = Response[End+1:]
+            # self.Channels[0].VerticalRange = float(Response[:End])
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            #self.Channels[0].VerticalOffset = float(Response[:End])
-            Response = Response[End+1:]
+            # self.Channels[0].VerticalOffset = float(Response[:End])
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[0].Gain = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[0].SetWaveForm(Response[:End], self.RecordLength)
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            Response = Response[End+1:] # Aqui nos indica que los datos siguientes son del canal 2
+            # Aqui nos indica que los datos siguientes son del canal 2
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[1].ProbeAttenuation = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            #self.Channels[1].VerticalRange = float(Response[:End])
-            Response = Response[End+1:]
+            # self.Channels[1].VerticalRange = float(Response[:End])
+            Response = Response[End + 1:]
             End = Response.find(" ")
-            #self.Channels[1].VerticalOffset = float(Response[:End])
-            Response = Response[End+1:]
+            # self.Channels[1].VerticalOffset = float(Response[:End])
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[1].Gain = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Channels[1].WaveForm = Response[:End]
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Measurement1 = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Measurement2 = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.Measurement3 = float(Response[:End])
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find(" ")
             self.TriggerReceived = Response[:End]
-            Response = Response[End+1:]
+            Response = Response[End + 1:]
             End = Response.find("\n")
             self.TriggerLevelReceive = Response[:End]
 
     def GetXMLResponse(self):
-        ScientificValue = '%.6E' %self.SampleRate
-        XML = '<oscilloscope>\n<osc_autoscale value="'+ str(self.Autoscale) +'"/>\n<horizontal>\n<horz_samplerate value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.RefPosition
-        XML += '<horz_refpos value="'+ str(ScientificValue) +'"/>\n<horz_recordlength value="' + str(self.RecordLength) +'"/>\n</horizontal>\n<channels>\n'
-        ScientificValue = '%.6E' %self.Channels[0].VerticalRange
-        XML += '<channel number="1">\n<chan_enabled value="'+ str(self.Channels[0].EnableChannel) +'"/>\n<chan_coupling value="'+ self.Channels[0].GetVerticalCouplingStr() +'"/>\n<chan_range value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.Channels[0].VerticalOffset
-        ScientificValue1 = '%.6E' %self.Channels[0].ProbeAttenuation
-        ScientificValue2 = '%.6E' %self.Channels[0].Gain
-        XML += '<chan_offset value="'+ str(ScientificValue) +'"/>\n<chan_attenuation value="'+ str(ScientificValue1) +'"/>\n<chan_gain value="'+ str(ScientificValue2) +'"/>\n'
-        XML += '<chan_samples encoding="base64">\n'+ self.Channels[0].WaveForm +'\n</chan_samples>\n</channel>\n'
+        ScientificValue = '%.6E' % self.SampleRate
+        XML = '<oscilloscope>\n<osc_autoscale value="' + \
+            str(self.Autoscale) + '"/>\n<horizontal>\n"'\
+            '"<horz_samplerate value="' + str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.RefPosition
+        XML += '<horz_refpos value="' + str(ScientificValue) + \
+            '"/>\n<horz_recordlength value="' + str(
+            self.RecordLength) + '"/>\n</horizontal>\n<channels>\n'
+        ScientificValue = '%.6E' % self.Channels[0].VerticalRange
+        XML += '<channel number="1">\n<chan_enabled value="' + \
+            str(self.Channels[0].EnableChannel) + \
+            '"/>\n<chan_coupling value="' + \
+            self.Channels[0].GetVerticalCouplingStr() + \
+            '"/>\n<chan_range value="' + str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.Channels[0].VerticalOffset
+        ScientificValue1 = '%.6E' % self.Channels[0].ProbeAttenuation
+        ScientificValue2 = '%.6E' % self.Channels[0].Gain
+        XML += '<chan_offset value="' + str(ScientificValue) + \
+            '"/>\n<chan_attenuation value="' + str(
+            ScientificValue1) + '"/>\n<chan_gain value="' + \
+            str(ScientificValue2) + '"/>\n'
+        XML += '<chan_samples encoding="base64">\n' + \
+            self.Channels[0].WaveForm + '\n</chan_samples>\n</channel>\n'
         Value = self.Channels[1].VerticalRange
-        Value = (Value/10)*2
-        ScientificValue = '%.6E' %Value
-        XML += '<channel number="2">\n<chan_enabled value="'+ str(self.Channels[1].EnableChannel) +'"/>\n<chan_coupling value="'+ self.Channels[1].GetVerticalCouplingStr() +'"/>\n<chan_range value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.Channels[1].VerticalOffset
-        ScientificValue1 = '%.6E' %self.Channels[1].ProbeAttenuation
-        ScientificValue2 = '%.6E' %self.Channels[1].Gain
-        XML += '<chan_offset value="'+ str(ScientificValue) +'"/>\n<chan_attenuation value="'+ str(ScientificValue1) +'"/>\n<chan_gain value="'+ str(ScientificValue2) +'"/>\n'
-        XML += '<chan_samples encoding="base64">\n'+ self.Channels[1].WaveForm +'\n</chan_samples>\n</channel>\n</channels>\n'
-        ScientificValue = '%.6E' %self.TriggerLevel
-        XML += '<trigger>\n<trig_source value="'+ self.GetTriggerSourceStr() +'"/>\n<trig_slope value="'+ self.GetTriggerSlopeStr() +'"/>\n<trig_coupling value="'+ self.GetTriggerCouplingStr() +'"/>\n<trig_level value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.TriggerDelay
-        XML += '<trig_mode value="'+ self.GetTriggerModeStr() +'"/>\n<trig_delay value="'+ str(ScientificValue) +'"/>\n<trig_received value="'+ str(self.TriggerLevelReceive) +'"/>\n</trigger>\n'
-        ScientificValue = '%.6E' %self.Measurement1
-        XML += '<measurements>\n<measurement number="1">\n<meas_channel value="'+ self.GetMeasurement1ChannelStr() +'"/>\n<meas_selection value="'+ self.GetMeasurement1SelectionStr() +'"/>\n<meas_result value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.Measurement2
-        XML += '<measurements>\n<measurement number="2">\n<meas_channel value="'+ self.GetMeasurement2ChannelStr() +'"/>\n<meas_selection value="'+ self.GetMeasurement2SelectionStr() +'"/>\n<meas_result value="'+ str(ScientificValue) +'"/>\n'
-        ScientificValue = '%.6E' %self.Measurement3
-        XML += '<measurements>\n<measurement number="3">\n<meas_channel value="'+ self.GetMeasurement3ChannelStr() +'"/>\n<meas_selection value="'+ self.GetMeasurement3SelectionStr() +'"/>\n<meas_result value="'+ str(ScientificValue) +'"/>\n'
+        Value = (Value / 10) * 2
+        ScientificValue = '%.6E' % Value
+        XML += '<channel number="2">\n<chan_enabled value="' + \
+            str(self.Channels[1].EnableChannel) + \
+            '"/>\n<chan_coupling value="' + \
+            self.Channels[1].GetVerticalCouplingStr() + \
+            '"/>\n<chan_range value="' + str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.Channels[1].VerticalOffset
+        ScientificValue1 = '%.6E' % self.Channels[1].ProbeAttenuation
+        ScientificValue2 = '%.6E' % self.Channels[1].Gain
+        XML += '<chan_offset value="' + str(ScientificValue) + \
+            '"/>\n<chan_attenuation value="' + str(ScientificValue1) + \
+            '"/>\n<chan_gain value="' + str(ScientificValue2) + '"/>\n'
+        XML += '<chan_samples encoding="base64">\n' + \
+            self.Channels[1].WaveForm + \
+            '\n</chan_samples>\n</channel>\n</channels>\n'
+        ScientificValue = '%.6E' % self.TriggerLevel
+        XML += '<trigger>\n<trig_source value="' + \
+            self.GetTriggerSourceStr() + '"/>\n<trig_slope value="' + \
+            self.GetTriggerSlopeStr() + '"/>\n<trig_coupling value="' + \
+            self.GetTriggerCouplingStr() + '"/>\n<trig_level value="' + \
+            str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.TriggerDelay
+        XML += '<trig_mode value="' + self.GetTriggerModeStr() + \
+            '"/>\n<trig_delay value="' + str(ScientificValue) + \
+            '"/>\n<trig_received value="' + str(self.TriggerLevelReceive) + \
+            '"/>\n</trigger>\n'
+        ScientificValue = '%.6E' % self.Measurement1
+        XML += '<measurements>\n<measurement number="1">\n"' + \
+            '"<meas_channel value="' + self.GetMeasurement1ChannelStr() + \
+            '"/>\n<meas_selection value="' + \
+            self.GetMeasurement1SelectionStr() + '"/>\n"' + \
+            '"<meas_result value="' + str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.Measurement2
+        XML += '<measurements>\n<measurement number="2">\n"' + \
+            '"<meas_channel value="' + self.GetMeasurement2ChannelStr() + \
+            '"/>\n<meas_selection value="' + \
+            self.GetMeasurement2SelectionStr() + '"/>\n"' + \
+            '"<meas_result value="' + str(ScientificValue) + '"/>\n'
+        ScientificValue = '%.6E' % self.Measurement3
+        XML += '<measurements>\n<measurement number="3">\n"' + \
+            '"<meas_channel value="' + self.GetMeasurement3ChannelStr() + \
+            '"/>\n<meas_selection value="' + \
+            self.GetMeasurement3SelectionStr() + \
+            '"/>\n<meas_result value="' + \
+            str(ScientificValue) + '"/>\n'
         XML += '</measurement>\n</measurements>\n</oscilloscope>\n'
         return XML
+
 
 class Channel(object):
     def __init__(self):
@@ -927,25 +1005,28 @@ class Channel(object):
 
     def SetVerticalRange(self, Value):
         if float(Value) > 0.00025 or float(Value) <= 5:
-            self.VerticalRange = float(Value)*8
+            self.VerticalRange = float(Value) * 8
         else:
             self.VerticalRange = -1
-    
+
     def GetVerticalRange(self):
         return self.VerticalRange
 
     def SetVerticalOffset(self, Value):
-        #if Value > (-self.VerticalRange * 4.0) or Value < (self.VerticalRange * 4.0)):
-        #En las primeras versiones de visir se ponia la resticcion "Vertical range must be between +/- half of vertical range"
-        #pero en la ultima se ha comentado. Se deja aqui comentada para activar en caso de necesidad de compatibilidad 
-        #con versiones antiguas.
+        # if Value > (-self.VerticalRange * 4.0) or
+        # Value < (self.VerticalRange * 4.0)):
+        # En las primeras versiones de visir se ponia la resticcion
+        # "Vertical range must be between +/- half of vertical range"
+        # pero en la ultima se ha comentado. Se deja aqui comentada
+        # para activar en caso de necesidad de compatibilidad
+        # con versiones antiguas.
         self.VerticalOffset = float(Value)
 
     def GetVerticalOffset(self):
         return self.VerticalOffset
 
     def SetProbeAttenuation(self, Value):
-        #Limits: Any positive real number. Typical values are 1, 10 and 100
+        # Limits: Any positive real number. Typical values are 1, 10 and 100
         if Value >= 0:
             self.ProbeAttenuation = float(Value)
         else:
@@ -955,7 +1036,12 @@ class Channel(object):
         return self.ProbeAttenuation
 
     def CheckValues(self):
-        return (self.EnableChannel != -1 and self.VerticalCoupling != -1 and self.VerticalRange != -1 and self.ProbeAttenuation != -1)
+        return (
+            self.EnableChannel != -
+            1 and self.VerticalCoupling != -
+            1 and self.VerticalRange != -
+            1 and self.ProbeAttenuation != -
+            1)
 
     def SetWaveForm(self, WaveForm, RecordLength):
         self.WaveForm = WaveForm
